@@ -1,4 +1,29 @@
-0.9.0 Python 3.10-3.14 and Django 4.2/5.2/6.0 support, migrate to pyproject.toml, drop six dependency
+0.9.0 (2026-04-24)
+
+  Modernization release — no changes to the public API.
+
+  Packaging:
+  - Migrated from setup.py to pyproject.toml (setuptools>=61)
+  - Bumped requires-python to >=3.10
+  - Dropped six dependency (Python 2 EOL since 2020)
+  - Replaced import mock with unittest.mock (stdlib)
+  - Updated classifiers: Python 3.10–3.14, Django 4.2/5.2/6.0
+
+  CI:
+  - Replaced Travis CI with GitHub Actions (.github/workflows/ci.yml)
+  - Matrix follows Django docs: one job per Python version, looping over
+    compatible Django versions (py3.10/3.11×dj4.2,5.2 | py3.12×dj4.2,5.2,6.0
+    | py3.13×dj5.2,6.0 | py3.14×dj5.2,6.0 experimental)
+
+  Quality:
+  - Replaced flake8 with ruff
+  - Modernized tox.ini: allowlist_externals, updated envlist and deps
+  - Fixed test fixtures to be Django-version-independent (controlled view
+    instead of Django admin login page)
+  - test_assertNoDiffSelector_non_ascii now self-cleans its fixture
+  - Removed orphaned test_response.py (belonged to another project)
+  - Removed brittle hardcoded 404 diff string from test_story
+  - Added DEFAULT_AUTO_FIELD to test settings, removed deprecated USE_L10N
 
 0.8.0 Strip pound from urls, add FIXTURE_REWRITE
 
