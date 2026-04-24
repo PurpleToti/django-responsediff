@@ -6,13 +6,11 @@ import shutil
 from django import http
 from django import test
 
-import mock
+from unittest import mock
 
 from responsediff.exceptions import DiffsFound
 from responsediff.response import Response
 from responsediff.test import ResponseDiffTestMixin
-
-import six
 
 
 class MixinTest(ResponseDiffTestMixin, test.TestCase):
@@ -41,9 +39,13 @@ class MixinTest(ResponseDiffTestMixin, test.TestCase):
         )
 
     def test_assertNoDiffSelector_non_ascii(self):  # noqa
-        response = test.Client().get('/admin/')
+        subject = Response.for_test(self)
+        for path in (subject.content_path, subject.metadata_path):
+            if os.path.exists(path):
+                os.unlink(path)
 
-        response.content = '<h1>à</h1>' if six.PY3 else u'<h1>à</h1>'
+        response = test.Client().get('/admin/')
+        response.content = '<h1>à</h1>'
 
         # Should fail, but not with a decoding error
         with self.assertRaises(DiffsFound):
@@ -125,16 +127,16 @@ class MixinTest(ResponseDiffTestMixin, test.TestCase):
             client=self.get_client(fixtures)
         )
 
-        expected = six.b('''
+        expected = b'''
 @@ -1 +1,4 @@
 -fail please
-\ No newline at end of file
+\\ No newline at end of file
 +href="/notrailing"
 +href="/notrailing?foo=bar"
 +href="/trailing/"
 +href="/trailing/?foo=bar"
-\ No newline at end of file
-        ''')
+\\ No newline at end of file
+        '''
 
         assert list(diffs.values())[0].strip() == expected.strip()
 

@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        django-version: ["4.2", "5.2", "6.0"]
+        include:
+          - python-version: "3.14"
+            django-version: "6.0"
+            experimental: true
+
+    continue-on-error: ${{ matrix.experimental == true }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
+
+      - name: Install
+        run: |
+          pip install -U pip
+          pip install "Django~=${{ matrix.django-version }}.0" beautifulsoup4 html5lib pytest pytest-django pytest-cov
+          pip install -e .
+
+      - name: Test
+        run: pytest -vv --cov=responsediff responsediff/
+        env:
+          DJANGO_SETTINGS_MODULE: responsediff.tests.project.settings
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Lint
+        run: ruff check responsediff

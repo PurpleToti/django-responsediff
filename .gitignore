@@ -4,6 +4,12 @@ __pycache__
 .tox
 .coverage
 .cache
+dist/
 dbdiff/tests/db.sqlite3
+responsediff/tests/response_fixtures/TestResponseDiff.test_story.content
+responsediff/tests/response_fixtures/TestResponseDiff.test_story.metadata
 responsediff/tests/response_fixtures/TestResponseDiff.test_story/
 responsediff/tests/response_fixtures/MixinTest.test_websiteTest/
+responsediff/tests/response_fixtures/MixinTest.test_assertWebsiteSame/
+responsediff/tests/response_fixtures/MixinTest.test_recursion/
+responsediff/tests/response_fixtures/MixinTest.test_redirect/
