@@ -20,9 +20,9 @@ jobs:
           - python-version: "3.12"
             django-versions: "4.2 5.2 6.0"
           - python-version: "3.13"
-            django-versions: "4.2 5.2 6.0"
+            django-versions: "5.2 6.0"
           - python-version: "3.14"
-            django-versions: "6.0"
+            django-versions: "5.2 6.0"
             experimental: true
 
     name: tests (py${{ matrix.python-version }})
