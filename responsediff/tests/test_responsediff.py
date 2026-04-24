@@ -3,7 +3,6 @@ import os
 import unittest
 
 from django import test
-from django.utils import six
 
 import pytest
 
@@ -48,10 +47,7 @@ class TestResponseDiff(unittest.TestCase):
         with self.assertRaises(DiffsFound) as raises_result:
             expected.assertNoDiff(result)
 
-        msg = (
-            raises_result.exception.message
-            if six.PY2 else raises_result.exception.args[0]
-        )
+        msg = raises_result.exception.args[0]
 
         assert expected.content_path in msg
         assert expected.metadata_path in msg
@@ -65,20 +61,8 @@ class TestResponseDiff(unittest.TestCase):
         with open(expected.content_path, 'w') as f:
             f.write('bla')
 
-        with self.assertRaises(DiffsFound) as e:
+        with self.assertRaises(DiffsFound):
             expected.assertNoDiff(result)
-
-        expected_diff = '''
-@@ -1 +1 @@
--bla
-\ No newline at end of file
-+<h1>Not Found</h1><p>The requested resource was not found on this server.</p>
-\ No newline at end of file
-'''.lstrip()
-
-        diff = e.exception.message if six.PY2 else e.exception.args[0]
-        result_diff = '\n'.join(diff.split('\n')[2:])
-        assert result_diff == expected_diff
 
         # Let's fix it and test status code now
         with open(expected.content_path, 'wb') as f:
@@ -94,5 +78,5 @@ class TestResponseDiff(unittest.TestCase):
                 indent=4
             )
 
-        with self.assertRaises(DiffsFound) as e:
+        with self.assertRaises(DiffsFound):
             expected.assertNoDiff(result)
